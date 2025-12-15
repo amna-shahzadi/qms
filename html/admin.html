@@ -1,0 +1,2696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizPro - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+ /* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #3f51b5;
+    --primary-dark: #303f9f;
+    --secondary: #5c6bc0;
+    --light: #f5f7fa;
+    --dark: #263238;
+    --gray: #78909c;
+    --white: #ffffff;
+    --error: #f44336;
+    --success: #4caf50;
+    --warning: #ff9800;
+    --info: #2196f3;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 70px;
+    --transition: all 0.3s ease;
+}
+
+[data-theme="dark"] {
+    --light: #263238;
+    --dark: #eceff1;
+    --white: #37474f;
+    --gray: #b0bec5;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--light);
+    color: var(--dark);
+    display: flex;
+    min-height: 100vh;
+    transition: var(--transition);
+    line-height: 1.6;
+}
+
+/* Header Styles */
+.dashboard-header {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+    z-index: 100;
+    transition: var(--transition);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.header-breadcrumb {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-notification {
+    position: relative;
+    cursor: pointer;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--error);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Sidebar Styles */
+.dashboard-sidebar {
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    z-index: 10;
+    position: fixed;
+    height: 100vh;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.sidebar-header {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-header h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.close-sidebar {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.profile-card {
+    padding: 25px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-icon {
+    font-size: 3.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 15px;
+}
+
+.profile-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.profile-card p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 0;
+    overflow-y: auto;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.8);
+    transition: var(--transition);
+    border-left: 4px solid transparent;
+    font-weight: 500;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.sidebar-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-left-color: white;
+}
+
+.sidebar-link i {
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-link-text {
+    transition: var(--transition);
+}
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 25px;
+    background-color: rgba(239, 68, 68, 0.2);
+    color: white;
+    text-decoration: none;
+    transition: var(--transition);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 500;
+}
+
+.logout-link:hover {
+    background-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Collapsed Sidebar */
+.sidebar-collapsed .dashboard-sidebar {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .dashboard-header {
+    left: var(--sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .dashboard-content {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .sidebar-link-text,
+.sidebar-collapsed .profile-card,
+.sidebar-collapsed .sidebar-header h2 span {
+    display: none;
+}
+
+.sidebar-collapsed .sidebar-header {
+    justify-content: center;
+    padding: 25px 10px;
+}
+
+.sidebar-collapsed .sidebar-link {
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+.sidebar-collapsed .logout-link {
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+:root {
+    --primary: #0d6efd;
+    --secondary: #004aad;
+    --sidebar-width: 250px;
+    --transition: all 0.3s ease;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    padding: 0;
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: var(--transition);
+}
+
+/* Hide scrollbar */
+.dashboard-sidebar::-webkit-scrollbar {
+    width: 0;
+}
+
+.dashboard-sidebar {
+    scrollbar-width: none;
+}
+
+/* Header */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-header h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-header i {
+    font-size: 1.3rem;
+}
+
+.close-sidebar {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.close-sidebar:hover {
+    color: #ffc107;
+}
+
+/* Profile Card */
+.profile-card {
+    text-align: center;
+    padding: 25px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-icon {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.profile-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.profile-card p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 3px;
+}
+
+/* Sidebar Nav */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 0;
+    flex-grow: 1;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: var(--transition);
+    border-left: 4px solid transparent;
+}
+
+.sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-left: 4px solid #ffc107;
+}
+
+.sidebar-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-left: 4px solid #ffc107;
+}
+
+/* Logout */
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+}
+
+.logout-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ff6b6b;
+}
+
+/* Main Content Styles */
+.dashboard-content {
+    flex: 1;
+    padding: 100px 30px 30px;
+    margin-left: var(--sidebar-width);
+    overflow-y: auto;
+    transition: var(--transition);
+}
+
+.greeting-message {
+    color: var(--dark);
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active-content {
+    display: block;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+    margin-bottom: 30px;
+    transition: var(--transition);
+}
+
+.dashboard-card h2 {
+    color: var(--dark);
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h3 {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.stat-trend {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.trend-up {
+    color: var(--success);
+}
+
+.trend-down {
+    color: var(--error);
+}
+
+/* Activity Log */
+.activity-log {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f8fafc;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-text {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.activity-time {
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+/* Action Bar */
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.input-filter {
+    flex: 1;
+    max-width: 400px;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: var(--white);
+    color: var(--dark);
+}
+
+.input-filter:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Buttons */
+.add-btn,
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn,
+.publish-btn,
+.draft-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-btn {
+    background-color: var(--success);
+    color: white;
+}
+
+.add-btn:hover {
+    background-color: #0d9c6b;
+    transform: translateY(-2px);
+}
+
+.edit-btn {
+    background-color: var(--primary);
+    color: white;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
+.delete-btn {
+    background-color: var(--error);
+    color: white;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
+.save-btn {
+    background-color: var(--success);
+    color: white;
+}
+
+.cancel-btn {
+    background-color: var(--gray);
+    color: white;
+}
+
+.publish-btn {
+    background-color: var(--success);
+    color: white;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
+.draft-btn {
+    background-color: var(--warning);
+    color: white;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
+/* Tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.data-table th {
+    background-color: #f8fafc;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--dark);
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.data-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table tr:hover {
+    background-color: #f8fafc;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-published {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-draft {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Quiz Cards */
+.quiz-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.quiz-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    transition: var(--transition);
+    border-left: 4px solid var(--primary);
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.quiz-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.quiz-meta {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 15px;
+}
+
+.quiz-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.quiz-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.quiz-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Analytics Charts */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.chart-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.chart-placeholder {
+    height: 300px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray);
+    font-size: 1.1rem;
+}
+
+/* Settings */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.setting-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.setting-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.setting-description {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 15px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.toggle-slider {
+    background-color: var(--primary);
+}
+
+input:checked+.toggle-slider:before {
+    transform: translateX(26px);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--white);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: var(--white);
+    color: var(--dark);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* User Analytics */
+.user-analytics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.analytics-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.analytics-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.analytics-chart {
+    height: 200px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray);
+    font-size: 1rem;
+}
+
+/* Chart Styles */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.chart-bar {
+    display: flex;
+    align-items: flex-end;
+    height: 250px;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.bar {
+    flex: 1;
+    background-color: var(--primary);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.bar:hover {
+    opacity: 0.8;
+}
+
+.bar-label {
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.bar-value {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .dashboard-sidebar {
+        width: 240px;
+    }
+
+    .dashboard-header {
+        left: 240px;
+    }
+
+    .dashboard-content {
+        margin-left: 240px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sidebar-collapsed .dashboard-sidebar {
+        width: var(--sidebar-collapsed-width);
+    }
+
+    .sidebar-collapsed .dashboard-header {
+        left: var(--sidebar-collapsed-width);
+    }
+
+    .sidebar-collapsed .dashboard-content {
+        margin-left: var(--sidebar-collapsed-width);
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .dashboard-sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+    }
+
+    .dashboard-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .dashboard-header {
+        left: 0;
+    }
+
+    .dashboard-content {
+        margin-left: 0;
+        padding: 100px 20px 20px;
+    }
+
+    .close-sidebar {
+        display: block;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-filter {
+        max-width: 100%;
+    }
+
+    .quiz-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-analytics {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-content {
+        padding: 100px 15px 15px;
+    }
+
+    .dashboard-card {
+        padding: 20px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .quiz-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .header-right {
+        gap: 10px;
+    }
+
+    .header-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* Base modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 5% auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    /* Limit modal height */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #eaeaea;
+    flex-shrink: 0;
+    /* Prevent header from shrinking */
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #777;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.close-modal:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Scrollable modal body */
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    flex-grow: 1;
+    /* Allow body to take available space */
+    max-height: calc(85vh - 140px);
+    /* Account for header and footer */
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #eaeaea;
+    flex-shrink: 0;
+    /* Prevent footer from shrinking */
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Button styles */
+button {
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.cancel-btn:hover {
+    background-color: #eaeaea;
+}
+
+.save-btn {
+    background-color: #4a90e2;
+    border: 1px solid #4a90e2;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #3a7bc8;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+    border: 1px solid #e74c3c;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Custom scrollbar for modal body */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.enhanced-settings {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.enhanced-settings:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.enhanced-settings h2 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.setting-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 12px 18px;
+    border-radius: 12px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.setting-box:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.setting-label {
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.setting-select {
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.setting-select:hover {
+    border-color: var(--primary);
+}
+
+.setting-options {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+.setting-options input[type="checkbox"] {
+    accent-color: var(--primary);
+}
+
+.setting-footer {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.save-btn {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn:hover {
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode (optional if you support theme switching) */
+body.dark .enhanced-settings {
+    background: rgba(30, 41, 59, 0.7);
+    color: #e2e8f0;
+}
+
+body.dark .setting-box {
+    background: rgba(51, 65, 85, 0.7);
+    color: #e2e8f0;
+}
+
+body.dark .setting-select {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+/* Completely remove scrollbar from sidebar */
+.dashboard-sidebar {
+    overflow: hidden !important;
+}
+
+.sidebar-nav {
+    overflow: hidden !important;
+}
+
+/* Alternative method - hide scrollbar but keep scrolling */
+.dashboard-sidebar {
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+
+.sidebar-nav {
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+
+/* If using mobile menu */
+.dashboard-sidebar.mobile-open {
+    overflow: hidden !important;
+}
+
+.dashboard-sidebar.mobile-open .sidebar-nav {
+    overflow: hidden !important;
+}
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-left">
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-title" id="header-title">Dashboard Overview</div>
+            <div class="header-breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>Admin</span>
+                <i class="fas fa-chevron-right"></i>
+                <span id="breadcrumb-current">Overview</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="header-notification">
+                <i class="fas fa-bell"></i>
+                <div class="notification-badge">3</div>
+            </div>
+            <div class="header-user">
+                <div class="user-avatar">AM</div>
+                <div class="user-info">
+                    <div class="user-name">Admin Master</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-brain"></i> <span>QuizPro Admin</span></h2>
+            <button class="close-sidebar"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="profile-card">
+            <i class="fas fa-shield-alt profile-icon"></i>
+            <h3 id="admin-name-display">Admin Master</h3>
+            <p id="admin-role-display"></p>Administrator</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#overview" class="sidebar-link active" data-content="overview">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard Overview</span>
+            </a>
+            <a href="#user-management" class="sidebar-link" data-content="user-management">
+                <i class="fas fa-users"></i>
+                <span>User Management</span>
+            </a>
+            <a href="#quiz-control" class="sidebar-link" data-content="quiz-control">
+                <i class="fas fa-list-check"></i>
+                <span>Quiz Control</span>
+            </a>
+            <a href="#analytics" class="sidebar-link" data-content="analytics">
+                <i class="fas fa-chart-bar"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#settings" class="sidebar-link" data-content="settings">
+                <i class="fas fa-cog"></i>
+                <span>System Settings</span>
+            </a>
+        </nav>
+
+        <a href="#" id="logout-link" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section dashboard-card active-content">
+            <h2><i class="fas fa-tachometer-alt"></i> System Overview</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>12% increase</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Active Quizzes</h3>
+                    <div class="stat-value">48</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>5% increase</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Quiz Completions</h3>
+                    <div class="stat-value">3,892</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>8% increase</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Recent Activity</h3>
+            <div id="recent-activity-log" class="activity-log">
+                <div class="activity-item">
+                    <div class="activity-icon" style="background-color: var(--success);">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-text">New teacher account created: Sarah Johnson</div>
+                        <div class="activity-time">10 minutes ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon" style="background-color: var(--primary);">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-text">Quiz "Advanced Mathematics" was updated</div>
+                        <div class="activity-time">45 minutes ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon" style="background-color: var(--warning);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-text">User reported issue with quiz submission</div>
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon" style="background-color: var(--secondary);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-text">Weekly performance report generated</div>
+                        <div class="activity-time">5 hours ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Section -->
+        <div id="user-management" class="content-section dashboard-card hidden-content">
+            <h2><i class="fas fa-users"></i> User Management</h2>
+
+            <div class="action-bar">
+                <input type="text" id="user-search" placeholder="Search by Name, ID, or Role..." class="input-filter">
+                <button id="add-user-btn" class="add-btn">
+                    <i class="fas fa-plus"></i> Add New User
+                </button>
+            </div>
+
+            <table class="data-table user-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table-body">
+                    <tr>
+                        <td>USR001</td>
+                        <td>John Smith</td>
+                        <td>john.smith@example.com</td>
+                        <td>Teacher</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" data-user-id="USR001"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="delete-btn" data-user-id="USR001"><i class="fas fa-trash"></i>
+                                Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>USR002</td>
+                        <td>Emily Johnson</td>
+                        <td>emily.j@example.com</td>
+                        <td>Student</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" data-user-id="USR002"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="delete-btn" data-user-id="USR002"><i class="fas fa-trash"></i>
+                                Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>USR003</td>
+                        <td>Michael Brown</td>
+                        <td>m.brown@example.com</td>
+                        <td>Teacher</td>
+                        <td><span class="status-badge status-inactive">Inactive</span></td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" data-user-id="USR003"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="delete-btn" data-user-id="USR003"><i class="fas fa-trash"></i>
+                                Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>USR004</td>
+                        <td>Sarah Williams</td>
+                        <td>s.williams@example.com</td>
+                        <td>Analyst</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" data-user-id="USR004"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="delete-btn" data-user-id="USR004"><i class="fas fa-trash"></i>
+                                Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Quiz Control Section -->
+        <div id="quiz-control" class="content-section dashboard-card hidden-content">
+            <h2><i class="fas fa-list-check"></i> Quiz Control</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Published Quizzes</h3>
+                    <div class="stat-value">32</div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Draft Quizzes</h3>
+                    <div class="stat-value">16</div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Questions</h3>
+                    <div class="stat-value">428</div>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <input type="text" id="quiz-search" placeholder="Search quizzes..." class="input-filter">
+                <button id="add-quiz-btn" class="add-btn">
+                    <i class="fas fa-plus"></i> Create New Quiz
+                </button>
+            </div>
+
+            <div class="quiz-cards" id="quiz-cards-container">
+                <div class="quiz-card">
+                    <div class="quiz-card-header">
+                        <div>
+                            <div class="quiz-title">Advanced Mathematics</div>
+                            <div class="quiz-meta">Created: 15 Mar 2023 • Last updated: 20 May 2023</div>
+                        </div>
+                        <span class="status-badge status-published">Published</span>
+                    </div>
+                    <div class="quiz-stats">
+                        <div class="quiz-stat">
+                            <div class="stat-label">Questions</div>
+                            <div class="stat-value">25</div>
+                        </div>
+                        <div class="quiz-stat">
+                            <div class="stat-label">Attempts</div>
+                            <div class="stat-value">342</div>
+                        </div>
+                        <div class="quiz-stat">
+                            <div class="stat-label">Avg. Score</div>
+                            <div class="stat-value">78%</div>
+                        </div>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="edit-btn" data-quiz-id="QUIZ001"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="publish-btn"><i class="fas fa-eye"></i> View</button>
+                        <button class="delete-btn" data-quiz-id="QUIZ001"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+
+                <div class="quiz-card">
+                    <div class="quiz-card-header">
+                        <div>
+                            <div class="quiz-title">History Fundamentals</div>
+                            <div class="quiz-meta">Created: 10 Apr 2023 • Last updated: 18 May 2023</div>
+                        </div>
+                        <span class="status-badge status-draft">Draft</span>
+                    </div>
+                    <div class="quiz-stats">
+                        <div class="quiz-stat">
+                            <div class="stat-label">Questions</div>
+                            <div class="stat-value">18</div>
+                        </div>
+                        <div class="quiz-stat">
+                            <div class="stat-label">Attempts</div>
+                            <div class="stat-value">0</div>
+                        </div>
+                        <div class="quiz-stat">
+                            <div class="stat-label">Avg. Score</div>
+                            <div class="stat-value">N/A</div>
+                        </div>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="edit-btn" data-quiz-id="QUIZ002"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="publish-btn"><i class="fas fa-paper-plane"></i> Publish</button>
+                        <button class="delete-btn" data-quiz-id="QUIZ002"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+
+                <div class="quiz-card">
+                    <div class="quiz-card-header">
+                        <div>
+                            <div class="quiz-title">Science Quiz: Biology</div>
+                            <div class="quiz-meta">Created: 5 May 2023 • Last updated: 12 May 2023</div>
+                        </div>
+                        <span class="status-badge status-published">Published</span>
+                    </div>
+                    <div class="quiz-stats">
+                        <div class="quiz-stat">
+                            <div class="stat-label">Questions</div>
+                            <div class="stat-value">30</div>
+                        </div>
+                        <div class="quiz-stat">
+                            <div class="stat-label">Attempts</div>
+                            <div class="stat-value">215</div>
+                        </div>
+                        <div class="quiz-stat">
+                            <div class="stat-label">Avg. Score</div>
+                            <div class="stat-value">82%</div>
+                        </div>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="edit-btn" data-quiz-id="QUIZ003"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="publish-btn"><i class="fas fa-eye"></i> View</button>
+                        <button class="delete-btn" data-quiz-id="QUIZ003"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics" class="content-section dashboard-card hidden-content">
+            <h2><i class="fas fa-chart-bar"></i> Analytics & Reports</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>User Engagement</h3>
+                    <div class="stat-value">84%</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>5% increase</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Quiz Completion Rate</h3>
+                    <div class="stat-value">76%</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>3% increase</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Avg. Time Spent</h3>
+                    <div class="stat-value">12.4 min</div>
+                    <div class="stat-trend trend-down">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>1.2 min decrease</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings" class="content-section dashboard-card hidden-content enhanced-settings">
+            <h2><i class="fas fa-cog"></i> System Settings</h2>
+
+            <div class="settings-container">
+                <!-- Theme -->
+                <div class="setting-box">
+                    <div class="setting-label">
+                        <i class="fas fa-palette"></i> Theme
+                    </div>
+                    <select id="theme-select" class="setting-select">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+
+                <!-- Notifications -->
+                <div class="setting-box">
+                    <div class="setting-label">
+                        <i class="fas fa-bell"></i> Notifications
+                    </div>
+                    <div class="setting-options">
+                        <label><input type="checkbox" checked> Email</label>
+                        <label><input type="checkbox"> Push</label>
+                    </div>
+                </div>
+
+                <!-- Language -->
+                <div class="setting-box">
+                    <div class="setting-label">
+                        <i class="fas fa-globe"></i> Language
+                    </div>
+                    <select id="language-select" class="setting-select">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                    </select>
+                </div>
+
+                <!-- Save -->
+                <div class="setting-footer">
+                    <button class="save-btn"><i class="fas fa-save"></i> Save Settings</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Add User Modal -->
+    <div id="add-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form id="add-user-form">
+                    <div class="form-group">
+                        <label for="new-user-name">Full Name</label>
+                        <input type="text" id="new-user-name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="new-user-email">Email Address</label>
+                        <input type="email" id="new-user-email" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="new-user-role">Role</label>
+                        <select id="new-user-role" required>
+                            <option value="">Select Role</option>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Analyst</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-user-status">Status</label>
+                        <select id="new-user-status" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                    <!-- Add more fields if needed to test scrolling -->
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-btn">Save User</button>
+            </div>
+        </div>
+    </div>
+    <!-- Edit User Modal -->
+    <div id="edit-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit User</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-user-form">
+                    <input type="hidden" id="edit-user-id">
+                    <div class="form-group">
+                        <label for="edit-user-name">Full Name</label>
+                        <input type="text" id="edit-user-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-user-email">Email Address</label>
+                        <input type="email" id="edit-user-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-user-role">Role</label>
+                        <select id="edit-user-role" required>
+                            <option value="">Select Role</option>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Analyst</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-user-status">Status</label>
+                        <select id="edit-user-status" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-btn">Update User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete User Modal -->
+    <div id="delete-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete User</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="delete-user-name">this user</strong>? This action cannot
+                    be undone.</p>
+                <input type="hidden" id="delete-user-id">
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn">Cancel</button>
+                <button class="delete-btn">Delete User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Quiz Modal -->
+    <div id="add-quiz-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Quiz</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-quiz-form">
+                    <div class="form-group">
+                        <label for="new-quiz-title">Quiz Title</label>
+                        <input type="text" id="new-quiz-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-quiz-description">Description</label>
+                        <textarea id="new-quiz-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-quiz-category">Category</label>
+                        <select id="new-quiz-category" required>
+                            <option value="">Select Category</option>
+                            <option value="math">Mathematics</option>
+                            <option value="science">Science</option>
+                            <option value="history">History</option>
+                            <option value="language">Language</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-quiz-difficulty">Difficulty</label>
+                        <select id="new-quiz-difficulty" required>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-quiz-questions">Number of Questions</label>
+                        <input type="number" id="new-quiz-questions" min="1" max="50" value="10" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-btn">Create Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Quiz Modal -->
+    <div id="edit-quiz-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Quiz</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-quiz-form">
+                    <input type="hidden" id="edit-quiz-id">
+                    <div class="form-group">
+                        <label for="edit-quiz-title">Quiz Title</label>
+                        <input type="text" id="edit-quiz-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-quiz-description">Description</label>
+                        <textarea id="edit-quiz-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-quiz-category">Category</label>
+                        <select id="edit-quiz-category" required>
+                            <option value="">Select Category</option>
+                            <option value="math">Mathematics</option>
+                            <option value="science">Science</option>
+                            <option value="history">History</option>
+                            <option value="language">Language</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-quiz-difficulty">Difficulty</label>
+                        <select id="edit-quiz-difficulty" required>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-quiz-questions">Number of Questions</label>
+                        <input type="number" id="edit-quiz-questions" min="1" max="50" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-quiz-status">Status</label>
+                        <select id="edit-quiz-status" required>
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-btn">Update Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Quiz Modal -->
+    <div id="delete-quiz-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Quiz</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="delete-quiz-title">this quiz</strong>? This action cannot
+                    be undone.</p>
+                <input type="hidden" id="delete-quiz-id">
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn">Cancel</button>
+                <button class="delete-btn">Delete Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        const logoutLink = document.getElementById('logout-link');
+        const headerTitle = document.getElementById('header-title');
+        const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeSidebar = document.querySelector('.close-sidebar');
+        const dashboardSidebar = document.querySelector('.dashboard-sidebar');
+        const dashboardBody = document.querySelector('.dashboard-body');
+        const themeSelect = document.getElementById('theme-select');
+
+        // Modal Elements
+        const addUserModal = document.getElementById('add-user-modal');
+        const editUserModal = document.getElementById('edit-user-modal');
+        const deleteUserModal = document.getElementById('delete-user-modal');
+        const addQuizModal = document.getElementById('add-quiz-modal');
+        const editQuizModal = document.getElementById('edit-quiz-modal');
+        const deleteQuizModal = document.getElementById('delete-quiz-modal');
+        const addUserBtn = document.getElementById('add-user-btn');
+        const addQuizBtn = document.getElementById('add-quiz-btn');
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        const cancelBtns = document.querySelectorAll('.cancel-btn');
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set active content based on URL hash or default to overview
+            const hash = window.location.hash || '#overview';
+            showContent(hash.substring(1));
+
+            // Add event listeners to sidebar links
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Remove active class from all links
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
+                    // Show corresponding content
+                    const contentId = this.getAttribute('data-content');
+                    showContent(contentId);
+
+                    // Update URL hash
+                    window.location.hash = contentId;
+
+                    // Close mobile sidebar if open
+                    if (window.innerWidth <= 768) {
+                        dashboardSidebar.classList.remove('mobile-open');
+                    }
+                });
+            });
+
+            // Logout functionality
+            logoutLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    // Redirect to login page
+                    window.location.href = '../html/index.html';
+                }
+            });
+
+            // Add search functionality
+            const userSearch = document.getElementById('user-search');
+            if (userSearch) {
+                userSearch.addEventListener('input', function () {
+                    filterUsers(this.value);
+                });
+            }
+
+            const quizSearch = document.getElementById('quiz-search');
+            if (quizSearch) {
+                quizSearch.addEventListener('input', function () {
+                    filterQuizzes(this.value);
+                });
+            }
+
+            // Modal functionality
+            setupModalFunctionality();
+
+            // Sidebar toggle functionality
+            menuToggle.addEventListener('click', function () {
+                dashboardSidebar.classList.toggle('mobile-open');
+            });
+
+            closeSidebar.addEventListener('click', function () {
+                dashboardSidebar.classList.remove('mobile-open');
+            });
+
+            // Theme selector functionality
+            if (themeSelect) {
+                // Check for saved theme preference or default to 'light'
+                const savedTheme = localStorage.getItem('quizpro-theme') || 'light';
+                themeSelect.value = savedTheme;
+                setTheme(savedTheme);
+
+                themeSelect.addEventListener('change', function () {
+                    setTheme(this.value);
+                    localStorage.setItem('quizpro-theme', this.value);
+                });
+            }
+
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768) {
+                    dashboardSidebar.classList.remove('mobile-open');
+                }
+            });
+        });
+
+        // Show content section
+        function showContent(contentId) {
+            // Hide all content sections
+            contentSections.forEach(section => {
+                section.classList.remove('active-content');
+            });
+
+            // Show the selected content section
+            const activeSection = document.getElementById(contentId);
+            if (activeSection) {
+                activeSection.classList.add('active-content');
+
+                // Update header title and breadcrumb
+                updateHeader(contentId);
+            }
+        }
+
+        // Update header based on current section
+        function updateHeader(sectionId) {
+            const sectionTitles = {
+                'overview': 'Dashboard Overview',
+                'user-management': 'User Management',
+                'quiz-control': 'Quiz Control',
+                'analytics': 'Analytics & Reports',
+                'settings': 'System Settings'
+            };
+
+            const breadcrumbTitles = {
+                'overview': 'Overview',
+                'user-management': 'User Management',
+                'quiz-control': 'Quiz Control',
+                'analytics': 'Analytics',
+                'settings': 'Settings'
+            };
+
+            headerTitle.textContent = sectionTitles[sectionId] || 'Dashboard';
+            breadcrumbCurrent.textContent = breadcrumbTitles[sectionId] || 'Dashboard';
+        }
+
+        // Filter users in the user management table
+        function filterUsers(searchTerm) {
+            const tableBody = document.getElementById('user-table-body');
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    const cellText = cells[j].textContent || cells[j].innerText;
+                    if (cellText.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+
+        // Filter quizzes in the quiz control section
+        function filterQuizzes(searchTerm) {
+            const quizCards = document.querySelectorAll('.quiz-card');
+
+            quizCards.forEach(card => {
+                const title = card.querySelector('.quiz-title').textContent;
+                if (title.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Set theme
+        function setTheme(theme) {
+            if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        }
+
+        // Setup modal functionality
+        function setupModalFunctionality() {
+            // Add User Modal
+            addUserBtn.addEventListener('click', function () {
+                addUserModal.classList.add('active');
+            });
+
+            // Add Quiz Modal
+            addQuizBtn.addEventListener('click', function () {
+                addQuizModal.classList.add('active');
+            });
+
+            // Edit User Buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                if (!btn.closest('.quiz-actions')) {
+                    btn.addEventListener('click', function () {
+                        const userId = this.getAttribute('data-user-id');
+                        openEditUserModal(userId);
+                    });
+                } else {
+                    btn.addEventListener('click', function () {
+                        const quizId = this.getAttribute('data-quiz-id');
+                        openEditQuizModal(quizId);
+                    });
+                }
+            });
+
+            // Delete User Buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                if (!btn.closest('.quiz-actions')) {
+                    btn.addEventListener('click', function () {
+                        const userId = this.getAttribute('data-user-id');
+                        const userName = this.closest('tr').querySelector('td:nth-child(2)').textContent;
+                        openDeleteUserModal(userId, userName);
+                    });
+                } else {
+                    btn.addEventListener('click', function () {
+                        const quizId = this.getAttribute('data-quiz-id');
+                        const quizTitle = this.closest('.quiz-card').querySelector('.quiz-title').textContent;
+                        openDeleteQuizModal(quizId, quizTitle);
+                    });
+                }
+            });
+
+            // Close modals
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    this.closest('.modal').classList.remove('active');
+                });
+            });
+
+            cancelBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    this.closest('.modal').classList.remove('active');
+                });
+            });
+
+            // Close modal when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+
+            // Save User (Add)
+            document.querySelector('#add-user-modal .save-btn').addEventListener('click', function () {
+                const name = document.getElementById('new-user-name').value;
+                const email = document.getElementById('new-user-email').value;
+                const role = document.getElementById('new-user-role').value;
+                const status = document.getElementById('new-user-status').value;
+
+                if (name && email && role && status) {
+                    // In a real app, you would send this data to the server
+                    alert(`User ${name} added successfully!`);
+                    addUserModal.classList.remove('active');
+                    document.getElementById('add-user-form').reset();
+                } else {
+                    alert('Please fill in all fields');
+                }
+            });
+
+            // Save User (Edit)
+            document.querySelector('#edit-user-modal .save-btn').addEventListener('click', function () {
+                const userId = document.getElementById('edit-user-id').value;
+                const name = document.getElementById('edit-user-name').value;
+                const email = document.getElementById('edit-user-email').value;
+                const role = document.getElementById('edit-user-role').value;
+                const status = document.getElementById('edit-user-status').value;
+
+                if (name && email && role && status) {
+                    // In a real app, you would send this data to the server
+                    alert(`User ${name} updated successfully!`);
+                    editUserModal.classList.remove('active');
+                } else {
+                    alert('Please fill in all fields');
+                }
+            });
+
+            // Delete User
+            document.querySelector('#delete-user-modal .delete-btn').addEventListener('click', function () {
+                const userId = document.getElementById('delete-user-id').value;
+                const userName = document.getElementById('delete-user-name').textContent;
+
+                // In a real app, you would send a delete request to the server
+                alert(`User ${userName} deleted successfully!`);
+                deleteUserModal.classList.remove('active');
+            });
+
+            // Save Quiz (Add)
+            document.querySelector('#add-quiz-modal .save-btn').addEventListener('click', function () {
+                const title = document.getElementById('new-quiz-title').value;
+                const description = document.getElementById('new-quiz-description').value;
+                const category = document.getElementById('new-quiz-category').value;
+                const difficulty = document.getElementById('new-quiz-difficulty').value;
+                const questions = document.getElementById('new-quiz-questions').value;
+
+                if (title && category && difficulty && questions) {
+                    // In a real app, you would send this data to the server
+                    alert(`Quiz "${title}" created successfully!`);
+                    addQuizModal.classList.remove('active');
+                    document.getElementById('add-quiz-form').reset();
+                } else {
+                    alert('Please fill in all required fields');
+                }
+            });
+
+            // Save Quiz (Edit)
+            document.querySelector('#edit-quiz-modal .save-btn').addEventListener('click', function () {
+                const quizId = document.getElementById('edit-quiz-id').value;
+                const title = document.getElementById('edit-quiz-title').value;
+                const description = document.getElementById('edit-quiz-description').value;
+                const category = document.getElementById('edit-quiz-category').value;
+                const difficulty = document.getElementById('edit-quiz-difficulty').value;
+                const questions = document.getElementById('edit-quiz-questions').value;
+                const status = document.getElementById('edit-quiz-status').value;
+
+                if (title && category && difficulty && questions && status) {
+                    // In a real app, you would send this data to the server
+                    alert(`Quiz "${title}" updated successfully!`);
+                    editQuizModal.classList.remove('active');
+                } else {
+                    alert('Please fill in all fields');
+                }
+            });
+
+            // Delete Quiz
+            document.querySelector('#delete-quiz-modal .delete-btn').addEventListener('click', function () {
+                const quizId = document.getElementById('delete-quiz-id').value;
+                const quizTitle = document.getElementById('delete-quiz-title').textContent;
+
+                // In a real app, you would send a delete request to the server
+                alert(`Quiz "${quizTitle}" deleted successfully!`);
+                deleteQuizModal.classList.remove('active');
+            });
+        }
+
+        // Open Edit User Modal with user data
+        function openEditUserModal(userId) {
+            // In a real app, you would fetch user data from the server
+            // For this example, we'll use mock data
+            const userData = {
+                'USR001': { name: 'John Smith', email: 'john.smith@example.com', role: 'teacher', status: 'active' },
+                'USR002': { name: 'Emily Johnson', email: 'emily.j@example.com', role: 'student', status: 'active' },
+                'USR003': { name: 'Michael Brown', email: 'm.brown@example.com', role: 'teacher', status: 'inactive' },
+                'USR004': { name: 'Sarah Williams', email: 's.williams@example.com', role: 'student', status: 'pending' }
+            };
+
+            const user = userData[userId];
+            if (user) {
+                document.getElementById('edit-user-id').value = userId;
+                document.getElementById('edit-user-name').value = user.name;
+                document.getElementById('edit-user-email').value = user.email;
+                document.getElementById('edit-user-role').value = user.role;
+                document.getElementById('edit-user-status').value = user.status;
+
+                editUserModal.classList.add('active');
+            }
+        }
+
+        // Open Delete User Modal
+        function openDeleteUserModal(userId, userName) {
+            document.getElementById('delete-user-id').value = userId;
+            document.getElementById('delete-user-name').textContent = userName;
+            deleteUserModal.classList.add('active');
+        }
+
+        // Open Edit Quiz Modal with quiz data
+        function openEditQuizModal(quizId) {
+            // In a real app, you would fetch quiz data from the server
+            // For this example, we'll use mock data
+            const quizData = {
+                'QUIZ001': {
+                    title: 'Advanced Mathematics',
+                    description: 'A comprehensive quiz covering advanced mathematical concepts',
+                    category: 'math',
+                    difficulty: 'hard',
+                    questions: 25,
+                    status: 'published'
+                },
+                'QUIZ002': {
+                    title: 'History Fundamentals',
+                    description: 'Basic historical facts and events',
+                    category: 'history',
+                    difficulty: 'medium',
+                    questions: 18,
+                    status: 'draft'
+                },
+                'QUIZ003': {
+                    title: 'Science Quiz: Biology',
+                    description: 'Test your knowledge of biological concepts',
+                    category: 'science',
+                    difficulty: 'medium',
+                    questions: 30,
+                    status: 'published'
+                }
+            };
+
+            const quiz = quizData[quizId];
+            if (quiz) {
+                document.getElementById('edit-quiz-id').value = quizId;
+                document.getElementById('edit-quiz-title').value = quiz.title;
+                document.getElementById('edit-quiz-description').value = quiz.description;
+                document.getElementById('edit-quiz-category').value = quiz.category;
+                document.getElementById('edit-quiz-difficulty').value = quiz.difficulty;
+                document.getElementById('edit-quiz-questions').value = quiz.questions;
+                document.getElementById('edit-quiz-status').value = quiz.status;
+
+                editQuizModal.classList.add('active');
+            }
+        }
+
+        // Open Delete Quiz Modal
+        function openDeleteQuizModal(quizId, quizTitle) {
+            document.getElementById('delete-quiz-id').value = quizId;
+            document.getElementById('delete-quiz-title').textContent = quizTitle;
+            deleteQuizModal.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
